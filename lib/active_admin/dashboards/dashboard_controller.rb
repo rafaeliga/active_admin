@@ -16,7 +16,19 @@ module ActiveAdmin
       end
 
       def find_sections
-        ActiveAdmin::Dashboards.sections_for_namespace(namespace)
+        sections = ActiveAdmin::Dashboards.sections_for_namespace(namespace)        
+        sections.select do |section|
+          if section.options.has_key?(:if)
+            symbol_or_proc = section.options[:if]
+            case symbol_or_proc
+            when Symbol, String then self.send(symbol_or_proc)
+            when Proc           then instance_exec(&symbol_or_proc)
+            else symbol_or_proc
+            end
+          else
+            true
+          end
+        end
       end
 
       def namespace
