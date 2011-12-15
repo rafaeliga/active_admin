@@ -29,7 +29,7 @@ module ActiveAdmin
       def add_section(name, options = {}, &block)
         namespace = options.delete(:namespace) || ActiveAdmin.application.default_namespace || :root
         self.sections[namespace] ||= [] 
-        self.sections[namespace] << Section.new(namespace, name, options, &block)
+        self.sections[namespace] << Section.new(namespace, name, options, &block) if options[:if]
         self.sections[namespace].sort!
       end
       alias_method :section, :add_section
